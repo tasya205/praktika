@@ -1,14 +1,27 @@
+/* голубая темка */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.6;
-  font-weight: 400;
+  --bg: #f0f6ff;
+  --card-bg: #ffffff;
+  --text: #333333;
+  --muted: #777777;
+  --accent: #1976D2;
+  --accent-light: #e3f2fd;
+  --accent-hover: #1565C0;
+  --danger: #f44336;
+  --border: #e0e0e0;
+  --sidebar-bg: #e3f2fd;
+}
 
-  color-scheme: light;
-  color: var(--text-main);
-  background-color: var(--bg-main);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* розовая темка */
+body.pink-theme {
+  --bg: #fff0f5;
+  --card-bg: #ffffff;
+  --text: #4a1a2e;
+  --muted: #996677;
+  --accent: #e91e63;
+  --accent-light: #fce4ec;
+  --accent-hover: #c2185b;
+  --danger: #c62828;
+  --border: #f8bbd0;
+  --sidebar-bg: #fce4ec;
 }

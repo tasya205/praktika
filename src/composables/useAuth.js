@@ -1,10 +1,23 @@
 import { ref } from 'vue'
-import { useStore } from '../stores/useStore'
+
+const STORAGE_KEY = 'bizmeet'
 
 const currentUser = ref(null)
 
+// восстановление сессии из localStorage вроде как
+try {
+  const saved = localStorage.getItem('bizmeet_auth')
+  if (saved) {
+    currentUser.value = JSON.parse(saved)
+  }
+} catch (e) {}
+
 export function useAuth() {
-  const { state } = useStore()
+  // пользователи из основного хранилища подгружаются
+  const getStore = () => {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : { users: [], meetings: [] }
+  }
 
   function login(key, fio) {
     const trimmedKey = key.trim()

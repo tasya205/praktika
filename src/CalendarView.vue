@@ -8,13 +8,19 @@
         <button @click="changeYear(1)">&gt;</button>
       </div>
       <ul class="month-list">
-        <li v-for="(month, idx) in months" :key="idx"
-            :class="{ active: idx === currentMonth }"
-            @click="currentMonth = idx">
+        <li v-for="(month, idx) in months" :key="idx" :class="{ active: idx === currentMonth }"
+          @click="currentMonth = idx">
           {{ month }}
         </li>
       </ul>
       <button v-if="isAssistant" class="btn-add" @click="goAddMeeting">+ Встреча</button>
+      <router-link to="/profile" class="profile-link">Профиль</router-link>
+      <router-link to="/about" class="about-link">О системе</router-link>
+      <div class="theme-switch">
+        <button @click="toggleTheme" class="theme-btn">
+          {{ isPink ? '💙 Синяя' : '💗 Розовая' }}
+        </button>
+      </div>
     </aside>
 
     <main class="month-grid">
@@ -22,18 +28,15 @@
         <div v-for="day in weekDays" :key="day" class="weekday">{{ day }}</div>
       </div>
       <div class="days">
-        <div v-for="(day, i) in daysArray" :key="i"
-             :class="['day', {
-               inactive: !day.current,
-               today: day.isToday,
-               hasMeetings: day.meetings?.length,
-               selected: day.current && day.dateStr === selectedDate
-             }]"
-             @click="day.current && openDay(day.dateStr)">
+        <div v-for="(day, i) in daysArray" :key="i" :class="['day', {
+          inactive: !day.current,
+          today: day.isToday,
+          hasMeetings: day.meetings?.length,
+          selected: day.current && day.dateStr === selectedDate
+        }]" @click="day.current && openDay(day.dateStr)">
           <span class="day-num">{{ day.num }}</span>
           <div v-if="day.meetings?.length" class="meeting-indicators">
-            <span v-for="(m, idx) in day.meetings" :key="idx"
-                  class="dot" :style="{background: dotColor(m)}"></span>
+            <span v-for="(m, idx) in day.meetings" :key="idx" class="dot" :style="{ background: dotColor(m) }"></span>
           </div>
         </div>
       </div>
@@ -62,7 +65,7 @@ import { useStore } from './stores/useStore'
 import { useAuth } from './composables/useAuth'
 
 const { state, getMeetingsByDate } = useStore()
-const { currentUser } = useAuth()
+const { currentUser, isAssistant: checkAssistant } = useAuth()
 const router = useRouter()
 
 const currentYear = ref(new Date().getFullYear())
@@ -72,8 +75,7 @@ const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
                 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 
-// const isAssistant = computed(() => currentUser.value?.role === 'assistant')
-const isAssistant = computed(() => true) // для теста пока тру админка
+const isAssistant = computed(() => checkAssistant())
 
 const firstDayOfMonth = computed(() => new Date(currentYear.value, currentMonth.value, 1))
 const lastDayOfMonth = computed(() => new Date(currentYear.value, currentMonth.value + 1, 0))
@@ -149,10 +151,15 @@ function dotColor(meeting) {
   if (meeting.type === 'informal') return '#4CAF50'
   return '#FF9800'
 }
+
+const isPink = ref(false)
+function toggleTheme() {
+  isPink.value = !isPink.value
+  document.body.classList.toggle('pink-theme', isPink.value)
+}
 </script>
 
 <style scoped>
-/* типо цветовая схема */
 .preview-header {
   display: flex;
   justify-content: space-between;
@@ -175,13 +182,14 @@ function dotColor(meeting) {
 .calendar-layout {
   display: flex;
   height: 100vh;
-  background: #fff;
+  background: var(--bg, #fff);
   font-family: Arial;
 }
 
+/* сайдбар */
 .sidebar {
   width: 200px;
-  background: #e3f2fd;
+  background: var(--sidebar-bg, #e3f2fd);
   padding: 15px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
 }
@@ -194,11 +202,12 @@ function dotColor(meeting) {
 }
 
 .year-select button {
-  background: #bbdefb;
+  background: var(--accent-light, #bbdefb);
   border: none;
   padding: 4px 8px;
   cursor: pointer;
   border-radius: 4px;
+  color: var(--text, #333);
 }
 
 .month-list {
@@ -211,10 +220,11 @@ function dotColor(meeting) {
   cursor: pointer;
   border-radius: 4px;
   margin-bottom: 4px;
+  color: var(--text, #333);
 }
 
 .month-list li.active {
-  background: #2196F3;
+  background: var(--accent, #2196F3);
   color: white;
 }
 
@@ -222,13 +232,14 @@ function dotColor(meeting) {
   width: 100%;
   margin-top: 20px;
   padding: 10px;
-  background: #1976D2;
+  background: var(--accent, #1976D2);
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
 }
 
+/* сетка дней */
 .month-grid {
   flex: 1;
   padding: 20px;
@@ -242,6 +253,7 @@ function dotColor(meeting) {
   text-align: center;
   font-weight: bold;
   margin-bottom: 5px;
+  color: var(--text, #333);
 }
 
 .days {
@@ -253,12 +265,14 @@ function dotColor(meeting) {
 }
 
 .day {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border, #e0e0e0);
   border-radius: 8px;
   padding: 6px;
   cursor: pointer;
   position: relative;
   min-height: 80px;
+  background: var(--card-bg, white);
+  color: var(--text, #333);
 }
 
 .day.inactive {
@@ -268,7 +282,12 @@ function dotColor(meeting) {
 }
 
 .day.today {
-  border: 2px solid #1976D2;
+  border: 2px solid var(--accent, #1976D2);
+}
+
+.day.selected {
+  background: var(--accent-light, #e3f2fd);
+  border-color: var(--accent, #1976D2);
 }
 
 .day-num {
@@ -287,20 +306,22 @@ function dotColor(meeting) {
   margin-right: 2px;
 }
 
+/* превьюшка дня */
 .day-preview {
   width: 260px;
-  background: #f9fcff;
+  background: var(--card-bg, #f9fcff);
   padding: 15px;
-  border-left: 1px solid #ddd;
+  border-left: 1px solid var(--border, #ddd);
 }
 
 .day-preview h3 {
   margin-top: 0;
-  color: #1565C0;
+  color: var(--accent-hover, #1565C0);
 }
 
 .preview-item {
   margin: 8px 0;
+  color: var(--text, #333);
 }
 
 .empty {
@@ -312,12 +333,44 @@ function dotColor(meeting) {
 .detail-link {
   display: inline-block;
   margin-top: 10px;
-  color: #1976D2;
+  color: var(--accent, #1976D2);
   text-decoration: underline;
 }
 
-.day.selected {
-  background: #e3f2fd;
-  border-color: #1976D2;
+/* профильные ссылки */
+.profile-link,
+.about-link {
+  display: block;
+  margin-top: 8px;
+  text-align: center;
+  color: var(--accent, #1976D2);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.profile-link:hover,
+.about-link:hover {
+  text-decoration: underline;
+}
+
+/* кнопка смены темы */
+.theme-switch {
+  margin-top: auto;
+  padding-top: 15px;
+}
+.theme-btn {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--accent, #1976D2);
+  background: var(--card-bg, white);
+  color: var(--accent, #1976D2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.theme-btn:hover {
+  background: var(--accent, #1976D2);
+  color: white;
 }
 </style>
