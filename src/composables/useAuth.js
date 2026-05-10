@@ -1,20 +1,43 @@
 import { ref } from 'vue'
-import { useStore } from '../stores/useStore'
+
+const STORAGE_KEY = 'bizmeet'
 
 const currentUser = ref(null)
 
-export function useAuth() {
-  const { state } = useStore()
+// восстановление сессии из localStorage вроде как
+try {
+  const saved = localStorage.getItem('bizmeet_auth')
+  if (saved) {
+    currentUser.value = JSON.parse(saved)
+  }
+} catch (e) {}
 
-  const login = (key, fio) => {
-    const user = state.users.find(u => u.key === key && u.fio === fio)
-    if (user) currentUser.value = user
-    return !!user
+export function useAuth() {
+  // пользователи из основного хранилища подгружаются
+  const getStore = () => {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : { users: [], meetings: [] }
   }
 
-  const logout = () => { currentUser.value = null }
+  const login = (key, fio) => {
+    const store = getStore()
+    const user = store.users.find(u => u.key === key && u.fio === fio)
+    if (user) {
+      currentUser.value = { id: user.id, fio: user.fio, role: user.role }
+      localStorage.setItem('bizmeet_auth', JSON.stringify(currentUser.value))
+      return true
+    }
+    return false
+  }
 
-  return { currentUser, login, logout }
+  const logout = () => {
+    currentUser.value = null
+    localStorage.removeItem('bizmeet_auth')
+  }
+
+  const isAssistant = () => currentUser.value?.role === 'assistant'
+  const isExecutive = () => currentUser.value?.role === 'executive'
+  const isCoordinator = () => currentUser.value?.role === 'coordinator'
+
+  return { currentUser, login, logout, isAssistant, isExecutive, isCoordinator }
 }
-
-// временно, тип заглушек если чо

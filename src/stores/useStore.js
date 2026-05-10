@@ -19,10 +19,18 @@ watch(state, (val) => {
 }, { deep: true })
 
 export function useStore() {
-  const addUser = (user) => { state.users.push({ id: Date.now().toString(), ...user }) }
-  const removeUser = (id) => { state.users = state.users.filter(u => u.id !== id) }
-  const addMeeting = (m) => { state.meetings.push({ id: Date.now().toString(), ...m }) }
-  const removeMeeting = (id) => { state.meetings = state.meetings.filter(m => m.id !== id) }
+  const addUser = (user) => {
+    state.users.push({ id: Date.now().toString(), ...user })
+  }
+  const removeUser = (id) => {
+    state.users = state.users.filter(u => u.id !== id)
+  }
+  const addMeeting = (m) => {
+    state.meetings.push({ id: Date.now().toString(), ...m })
+  }
+  const removeMeeting = (id) => {
+    state.meetings = state.meetings.filter(m => m.id !== id)
+  }
   const getMeetingsByDate = (date) => state.meetings.filter(m => m.date === date)
 
   return { state, addUser, removeUser, addMeeting, removeMeeting, getMeetingsByDate }
