@@ -7,6 +7,7 @@ import LoginPage from './LoginPage.vue'
 import ProfilePage from './ProfilePage.vue'
 import AboutPage from './AboutPage.vue'
 
+
 const routes = [
   { path: '/login', component: LoginPage },
   { path: '/', component: CalendarView, meta: { requiresAuth: true } },

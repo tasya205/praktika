@@ -70,6 +70,16 @@ function canSeeField(meeting, field) {
   const perms = meeting.permissions?.[role]
   return perms?.viewFields?.includes(field)
 }
+
+function typeName(type) {
+  const map = {
+    planning: 'Планёрка',
+    negotiation: 'Переговоры',
+    informal: 'Неформальная',
+    urgent: 'Срочно'
+  }
+  return map[type] || type
+}
 </script>
 
 <style scoped>
