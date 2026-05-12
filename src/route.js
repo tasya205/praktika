@@ -6,6 +6,7 @@ import WorkersPage from './WorkersPage.vue'
 import LoginPage from './LoginPage.vue'
 import ProfilePage from './ProfilePage.vue'
 import AboutPage from './AboutPage.vue'
+import NotFoundPage from './NotFoundPage.vue'
 
 
 const routes = [
