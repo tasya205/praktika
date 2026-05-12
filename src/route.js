@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import CalendarView from './CalendarView.vue'
 import DayPage from './DayPage.vue'
 import AdminPanel from './AdminPanel.vue'
@@ -7,6 +7,7 @@ import LoginPage from './LoginPage.vue'
 import ProfilePage from './ProfilePage.vue'
 import AboutPage from './AboutPage.vue'
 import NotFoundPage from './NotFoundPage.vue'
+
 
 const routes = [
   { path: '/login', component: LoginPage },
@@ -19,7 +20,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes
 })
 

@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { useStore } from '../stores/useStore'
 
 const STORAGE_KEY = 'bizmeet'
 
